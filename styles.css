@@ -45,3 +45,26 @@
     width:1.5em;
 
 }
+
+.navbar{
+    display:flex;
+    justify-content: space-around;
+}
+
+.container{
+    padding: 2rem;
+    text-align: center;
+    
+}
+body{
+    background-color: rgb(212, 211, 209);
+
+}
+
+.container h1{
+    margin: 2rem;
+}
+
+.list-container{
+    text-align: left;
+}
