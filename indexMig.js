@@ -39,7 +39,13 @@ function removeTask(){
 }
 
 function expandDropDown(){
-    const newSubTask =createListElements(prompt("Add sub task"));
+    const subTaskValue =prompt("Add sub task");
+    if(!subTaskValue)
+    {
+        return;
+    }
+    const newSubTask =createListElements(subTaskValue);
+    
     newSubTask.style.backgroundColor="#E1CDFA";
     newSubTask.style.width="70%";
     newSubTask.style.marginLeft="2rem";
