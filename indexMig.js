@@ -14,7 +14,7 @@ function addTask(){
     }
     
     
-    taskList.appendChild(createListElements(submittedValue,taskList))
+    taskList.appendChild(createListElements(submittedValue))
     newTask.value="";
 }
 
