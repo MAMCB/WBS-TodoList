@@ -14,7 +14,7 @@ function addTask(){
     }
     
     
-    taskList.appendChild(createListElements(submittedValue))
+    taskList.appendChild(createListElements(submittedValue,true))
     newTask.value="";
 }
 
@@ -40,20 +40,31 @@ function removeTask(){
 
 function expandDropDown(){
     const subTaskValue =prompt("Add sub task");
+    let newSubTask;
     if(!subTaskValue)
     {
         return;
     }
-    const newSubTask =createListElements(subTaskValue);
+    if(this.parentNode.clientWidth<600)
+    {
+        newSubTask =createListElements(subTaskValue,false);
+    }
+    else{
+          newSubTask =createListElements(subTaskValue,true);
+    }
+   
     
     newSubTask.style.backgroundColor="#E1CDFA";
     newSubTask.style.width="70%";
     newSubTask.style.marginLeft="2rem";
     this.parentNode.appendChild(newSubTask);
+    
+  
+    
 
 }
 
-function createListElements(value)
+function createListElements(value,subTask)
 {
     const newElements=[];
     //creates div parent element and add its classes
@@ -85,12 +96,17 @@ function createListElements(value)
     removeButton.classList.add("btn-danger");
     removeButton.addEventListener("click",removeTask);
     newElements.push(removeButton);
-    const dropDownButton = document.createElement("button");
-    dropDownButton.classList.add("btn");
-    dropDownButton.classList.add("btn-secondary");
-    dropDownButton.innerText="Sub-tasks"
-    dropDownButton.addEventListener("click",expandDropDown);
-    newElements.push(dropDownButton);
+    if(subTask)
+    {
+        const dropDownButton = document.createElement("button");
+        dropDownButton.classList.add("btn");
+        dropDownButton.classList.add("btn-secondary");
+        dropDownButton.innerText="Sub-tasks"
+        dropDownButton.addEventListener("click",expandDropDown);
+        newElements.push(dropDownButton);
+
+    }
+    
 
     
    for(let i = 0; i<newElements.length;i++)
