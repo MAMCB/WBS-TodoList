@@ -1,0 +1,47 @@
+.list-container {
+    margin-top: 2rem;
+    max-height: 500px;
+    /* Set the maximum height for the list container */
+    overflow-y: auto;
+    /* Add a vertical scrollbar when content exceeds the container's height */
+    border: 1px solid #ccc;
+    /* Optional: Add a border for styling */
+}
+
+.scrollable-list {
+    list-style: none;
+    /* Remove default list bullet points */
+    padding: 0;
+    /* Remove default padding */
+}
+
+.scrollable-list li {
+    
+    padding: 8px;
+    /* Add padding for better readability */
+    border-bottom: 1px solid #eee;
+    /* Optional: Add a separating line between list items */
+}
+
+.scrollable-list li:last-child {
+    border-bottom: none;
+    /* Remove the border on the last item */
+}
+
+.btn{
+    margin:0rem 1rem;
+}
+.form-check{
+    padding: 0.3rem;
+    border: 1px solid black;
+}
+.form-check .form-check-input {
+    margin-left: 0rem;
+}
+
+.form-check-input{
+    margin:0.5rem 1rem;
+    height:1.5em;
+    width:1.5em;
+
+}
