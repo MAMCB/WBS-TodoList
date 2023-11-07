@@ -5,19 +5,85 @@ const newTask = document.getElementById("new_task");
 
 function addTask(){
     
-    const newElements=[];
+   
     const submittedValue = newTask.value;
+    if(!submittedValue)
+    {
+        alert("Please add new task first.")
+        return;
+    }
+    
+    
+    taskList.appendChild(createListElements(submittedValue,true))
+    newTask.value="";
+}
+
+function editTask(){
+    const newTask=prompt("Change task");
+    if(newTask)
+    {
+        this.parentNode.children[1].innerText=newTask;
+    }
+    else
+    {
+        return;
+    }
+     
+   
+    
+}
+
+function removeTask(){
+    this.parentNode.parentNode.removeChild(this.parentNode);
+   
+}
+
+function expandDropDown(){
+    const subTaskValue =prompt("Add sub task");
+    let newSubTask;
+    if(!subTaskValue)
+    {
+        return;
+    }
+    if(this.parentNode.clientWidth<600)
+    {
+        newSubTask =createListElements(subTaskValue,false);
+    }
+    else{
+          newSubTask =createListElements(subTaskValue,true);
+    }
+   
+    
+    newSubTask.style.backgroundColor="#E1CDFA";
+    newSubTask.style.width="70%";
+    newSubTask.style.marginLeft="2rem";
+    this.parentNode.appendChild(newSubTask);
+    
+  
+    
+
+}
+
+function createListElements(value,subTask)
+{
+    const newElements=[];
+    //creates div parent element and add its classes
     const newItemDiv = document.createElement("div")
     newItemDiv.classList.add("form-check");
+
+    //creates check input element,adds its classes and pushes it to newElements array
     const newCheckInput = document.createElement("input");
     newCheckInput.classList.add("form-check-input");
     newCheckInput.type="checkbox";
     newElements.push(newCheckInput);
     
+    //create label element,adds its classes and values and pushes it to newElements array
     const newItemLabel = document.createElement("label");
     newItemLabel.classList.add("form-check-label");
-    newItemLabel.innerText=submittedValue;
+    newItemLabel.innerText=value;
     newElements.push(newItemLabel);
+
+    //creates edit and remove buttons,add its classes and pushes them to newElements array
     const editButton = document.createElement("button");
     editButton.innerText="Edit";
     editButton.classList.add("btn");
@@ -30,23 +96,27 @@ function addTask(){
     removeButton.classList.add("btn-danger");
     removeButton.addEventListener("click",removeTask);
     newElements.push(removeButton);
+    if(subTask)
+    {
+        const dropDownButton = document.createElement("button");
+        dropDownButton.classList.add("btn");
+        dropDownButton.classList.add("btn-secondary");
+        dropDownButton.innerText="Sub-tasks"
+        dropDownButton.addEventListener("click",expandDropDown);
+        newElements.push(dropDownButton);
+
+    }
+    
+
+    
    for(let i = 0; i<newElements.length;i++)
    {
         newItemDiv.appendChild(newElements[i]);
    }
    
-    
-    taskList.appendChild(newItemDiv)
-    newTask.value="";
+
+
+
+    return newItemDiv;
 }
 
-function editTask(){
-     this.parentNode.children[1].innerText=prompt("Change task");
-   
-    
-}
-
-function removeTask(){
-    taskList.removeChild(this.parentNode);
-   
-}
