@@ -41,7 +41,9 @@ function addTask(){
 }
 
 function editTask(){
-    alert("Trying to edit the task");
+     this.parentNode.children[1].innerText=prompt("Change task");
+   
+    
 }
 
 function removeTask(){
