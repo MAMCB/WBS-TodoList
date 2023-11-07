@@ -14,19 +14,37 @@ function addTask(){
     }
     
     
-    taskList.appendChild(createListElements(submittedValue))
+    taskList.appendChild(createListElements(submittedValue,taskList))
     newTask.value="";
 }
 
 function editTask(){
-     this.parentNode.children[1].innerText=prompt("Change task");
+    const newTask=prompt("Change task");
+    if(newTask)
+    {
+        this.parentNode.children[1].innerText=newTask;
+    }
+    else
+    {
+        return;
+    }
+     
    
     
 }
 
 function removeTask(){
-    taskList.removeChild(this.parentNode);
+    this.parentNode.parentNode.removeChild(this.parentNode);
    
+}
+
+function expandDropDown(){
+    const newSubTask =createListElements(prompt("Add sub task"));
+    newSubTask.style.backgroundColor="#E1CDFA";
+    newSubTask.style.width="70%";
+    newSubTask.style.marginLeft="2rem";
+    this.parentNode.appendChild(newSubTask);
+
 }
 
 function createListElements(value)
@@ -61,6 +79,12 @@ function createListElements(value)
     removeButton.classList.add("btn-danger");
     removeButton.addEventListener("click",removeTask);
     newElements.push(removeButton);
+    const dropDownButton = document.createElement("button");
+    dropDownButton.classList.add("btn");
+    dropDownButton.classList.add("btn-secondary");
+    dropDownButton.innerText="Sub-tasks"
+    dropDownButton.addEventListener("click",expandDropDown);
+    newElements.push(dropDownButton);
 
     
    for(let i = 0; i<newElements.length;i++)
@@ -73,3 +97,4 @@ function createListElements(value)
 
     return newItemDiv;
 }
+
