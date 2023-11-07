@@ -45,7 +45,7 @@ function expandDropDown(){
     {
         return;
     }
-    if(this.parentNode.clientWidth<600)
+    if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
     }
@@ -64,6 +64,43 @@ function expandDropDown(){
 
 }
 
+function updateParents()
+{
+    const parent=this.parentNode.parentNode;
+    if(parent.tagName==="UL")
+    {
+        
+
+        return;
+    }
+    const childDivs = []
+    for(let i = 0; i< parent.children.length;i++)
+    {
+        if(parent.children[i].tagName==="DIV")
+        {
+            childDivs.push(parent.children[i]);
+        }
+    }
+     for(let i = 0; i<childDivs.length;i++)
+     {
+        
+         if(childDivs[i].children[0].checked)
+         {
+            
+            continue;
+         }
+         else{
+            parent.children[0].checked=false;
+            return;
+         }
+     }
+     
+     parent.children[0].checked=true;
+     
+
+
+}
+
 function createListElements(value,subTask)
 {
     const newElements=[];
@@ -75,6 +112,7 @@ function createListElements(value,subTask)
     const newCheckInput = document.createElement("input");
     newCheckInput.classList.add("form-check-input");
     newCheckInput.type="checkbox";
+    newCheckInput.addEventListener("click",updateParents);
     newElements.push(newCheckInput);
     
     //create label element,adds its classes and values and pushes it to newElements array
