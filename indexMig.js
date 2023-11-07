@@ -7,6 +7,11 @@ function addTask(){
     
     const newElements=[];
     const submittedValue = newTask.value;
+    if(!submittedValue)
+    {
+        alert("Please add new task first.")
+        return;
+    }
     const newItemDiv = document.createElement("div")
     newItemDiv.classList.add("form-check");
     const newCheckInput = document.createElement("input");
