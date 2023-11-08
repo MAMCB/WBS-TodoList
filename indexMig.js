@@ -34,13 +34,36 @@ function editTask(){
 }
 
 function removeTask(){
+    const children = this.parentNode.parentNode.children;
+    
+    
+    let subTaskCount=0;
+    for(let i =0; i<children.length;i++)
+    {
+        
+        if(children[i].tagName==="DIV")
+        {
+            
+            subTaskCount++;
+        }
+    }
+    if(this.parentNode.parentNode.tagName!=="UL" && subTaskCount===1 )
+    {
+        this.parentNode.parentNode.removeChild(this.parentNode.parentNode.children[5]);
+    }
+    
     this.parentNode.parentNode.removeChild(this.parentNode);
+    
+
+    
+    
    
 }
 
 function expandDropDown(){
     const subTaskValue =prompt("Add sub task");
     let newSubTask;
+    let dropDownIcon;
     if(!subTaskValue)
     {
         return;
@@ -48,20 +71,72 @@ function expandDropDown(){
     if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
+        
+        
     }
     else{
           newSubTask =createListElements(subTaskValue,true);
     }
-   
+     
     
-    newSubTask.style.backgroundColor="#E1CDFA";
+    
+    const children = this.parentNode.children;
+    let hasDropDownIcon=false;
+   for(let i = 0; i <children.length;i++)
+   {
+        if(children[i].tagName==="I")
+        {
+            hasDropDownIcon=true;
+        }
+   }
+   if(!hasDropDownIcon)
+   {
+        dropDownIcon =document.createElement("i");
+     dropDownIcon.classList.add("fa-solid","fa-caret-down","fa-fade");
+     dropDownIcon.style.fontSize="30px";
+     dropDownIcon.style.cursor="pointer";
+     dropDownIcon.addEventListener("click",toggleSubtasks);
+     this.parentNode.appendChild(dropDownIcon);
+
+   }
+   newSubTask.style.backgroundColor="#E1CDFA";
     newSubTask.style.width="70%";
     newSubTask.style.marginLeft="2rem";
     this.parentNode.appendChild(newSubTask);
+      
     
-  
     
 
+
+}
+
+function toggleSubtasks(){
+    
+    const parent = this.parentNode;
+    
+    const childDivs = []
+    for(let i = 0; i< parent.children.length;i++)
+    {
+        if(parent.children[i].tagName==="DIV")
+        {
+            childDivs.push(parent.children[i]);
+        }
+    }
+   
+     for(let i = 0; i<childDivs.length;i++)
+     {  
+        
+         if(childDivs[i].style.display==="none")
+         {
+            
+            childDivs[i].style.display="block";
+         }
+         else
+         {
+            childDivs[i].style.display="none";
+         }
+         
+     }
 }
 
 function updateParents()
