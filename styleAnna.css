@@ -1,0 +1,25 @@
+.toDoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  background-color: antiquewhite;
+   font-family: "Sofia", sans-serif;
+}
+
+.toDoContainer li {
+  display: flex;
+  margin-bottom: 0.5rem;
+  align-content: space-between;
+  padding: 0.5rem;
+}
+
+.toDoList * {
+  padding: 0rem 1rem;
+}
+
+.toDoList {
+  padding: 0;
+  list-style: none;
+}
