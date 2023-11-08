@@ -32,6 +32,17 @@ function deleteTask(event, index) {
   console.log(numberList);
 }
 
+function editTask(event, index , label){
+  const button = event.target;
+  const promt = window.prompt("edit your task")
+  if (promt !== "") {
+    label.textContent = promt;
+    tasks.splice(index,1,promt)
+    console.log(tasks)
+  }
+  else alert("You write nothing")
+}
+
 function addTaskToArray(valueText) {
   tasks.push(valueText);
   console.log("Add task to Array with value: ", valueText);
@@ -52,7 +63,7 @@ function addnewTask(event) {
   } else {
     alert("you didn't write a task!");
   }
-  deleteInput(); // event.target.reset() - not working
+  deleteInput();
 }
 
 // function checkedInput(input) {
@@ -67,6 +78,7 @@ function createNewToDo(valueText, index) {
     const li = toDoUl.appendChild(document.createElement("li"));
     const input = li.appendChild(document.createElement("input"));
     const label = li.appendChild(document.createElement("label"));
+    const editButton = li.appendChild(document.createElement("button"));
     const deleteButton = li.appendChild(document.createElement("button"));
 
     input.type = "checkbox";
@@ -76,9 +88,16 @@ function createNewToDo(valueText, index) {
     label.htmlFor = input.id;
     console.log(input.id);
     label.textContent = valueText;
+
+    editButton.textContent = "Edit";
+    editButton.type = "button";
+    deleteButton.className = input.id;
+
     deleteButton.textContent = "Delete";
     deleteButton.type = "button";
     deleteButton.className = input.id;
+
+    editButton.addEventListener("click", (event) => editTask(event,index, label));
 
     deleteButton.addEventListener("click", (event) => deleteTask(event, index));
 
