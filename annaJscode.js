@@ -19,15 +19,17 @@ function deleteInput() {
   textTask.value = "";
 }
 
-function deleteTask(event) {
+function deleteTask(event, index) {
+  console.log(event);
+  console.log(index);
   const button = event.target;
-  if (button.textContent === "Delete") {
-    const li = button.parentElement;
-    toDoUl.removeChild(li);
-    deleteTaskfromArray(numberList);
-    numberList--;
-    console.log(numberList);
-  }
+  console.log(button);
+
+  const li = button.parentElement;
+  toDoUl.removeChild(li);
+  deleteTaskfromArray(index);
+  numberList--;
+  console.log(numberList);
 }
 
 function addTaskToArray(valueText) {
@@ -35,9 +37,9 @@ function addTaskToArray(valueText) {
   console.log("Add task to Array with value: ", valueText);
 }
 
-function deleteTaskfromArray(numberList) {
-  tasks.splice(numberList, 1);
-  console.log("Delete a task from Array on index: ", numberList);
+function deleteTaskfromArray(index) {
+  tasks.splice(index, 1);
+  console.log("Delete a task from Array on index: ", index);
 }
 
 function addnewTask(event) {
@@ -50,7 +52,7 @@ function addnewTask(event) {
   } else {
     alert("you didn't write a task!");
   }
-  deleteInput();
+  deleteInput(); // event.target.reset() - not working
 }
 
 // function checkedInput(input) {
@@ -60,7 +62,7 @@ function addnewTask(event) {
 //   }
 // }
 
-function createNewToDo(valueText) {
+function createNewToDo(valueText, index) {
   if (valueText !== "") {
     const li = toDoUl.appendChild(document.createElement("li"));
     const input = li.appendChild(document.createElement("input"));
@@ -68,17 +70,17 @@ function createNewToDo(valueText) {
     const deleteButton = li.appendChild(document.createElement("button"));
 
     input.type = "checkbox";
-    input.id = `toDoTask${numberList}`;
-    input.name = `toDoTask${numberList}`;
+    input.id = "toDo" + index;
+    input.name = input.id;
 
     label.htmlFor = input.id;
     console.log(input.id);
     label.textContent = valueText;
     deleteButton.textContent = "Delete";
     deleteButton.type = "button";
-    deleteButton.className = `toDoTask${numberList}`;
+    deleteButton.className = input.id;
 
-    deleteButton.addEventListener("click", deleteTask);
+    deleteButton.addEventListener("click", (event) => deleteTask(event, index));
 
     console.log(li);
 
@@ -90,15 +92,15 @@ function createNewToDo(valueText) {
 
 function renderTasks() {
   toDoUl.textContent = "";
-  tasks.forEach((task) => {
-    console.log("Task??", task);
-    const newCheckTask = createNewToDo(task);
+  tasks.forEach((task, index) => {
+    console.log("Task??", task, index);
+    const newCheckTask = createNewToDo(task, index);
     toDoUl.appendChild(newCheckTask.li);
   });
 }
 
 addTaskbutton.addEventListener("click", function (event) {
   addnewTask(event);
-  console.log(numberList);
+  console.log(tasks.length);
 });
 renderTasks();
