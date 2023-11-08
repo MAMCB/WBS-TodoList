@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-.container{
+.todoContainer{
     width: 100%;
     min-height: 100vh;
     background: linear-gradient(135deg, #153677, #4e085f);
@@ -58,7 +58,7 @@ button{
     border-radius: 40px;
 }
 
-ul li{
+.toDoList{
     list-style: none;
     font-size: 17px;
     padding: 12px 8px 12px 50px;
@@ -66,7 +66,7 @@ ul li{
     cursor: pointer;
     position: relative;
 }
-ul li::before{
+.toDoList::before{
     content: '';
     position: absolute;
     height: 28px;
@@ -78,15 +78,15 @@ ul li::before{
     top:12px;
     left: 8px;
 }
-ul li.checked{
+.toDoList.checked{
     color: #555;
     text-decoration: line-through;
 }
 
-ul li.checked::before{
+.toDoList.checked::before{
     background-image: url(resources/checkmark.png)
 }
-ul li span{
+.toDoList span{
     position: absolute;
     right: 0;
     top: 5px;
@@ -97,6 +97,6 @@ ul li span{
     line-height: 40px;
     text-align: center;
 }
-ul li span:hover{
-    background: #edeef0;
+.toDoList span:hover{
+    color: #ff5945;
 }
