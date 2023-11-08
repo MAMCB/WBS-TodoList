@@ -53,6 +53,13 @@ function addnewTask(event) {
   deleteInput();
 }
 
+// function checkedInput(input) {
+//   if (!input) {
+//     input.checked = true;
+//     console.log(input.checked);
+//   }
+// }
+
 function createNewToDo(valueText) {
   if (valueText !== "") {
     const li = toDoUl.appendChild(document.createElement("li"));
@@ -61,16 +68,21 @@ function createNewToDo(valueText) {
     const deleteButton = li.appendChild(document.createElement("button"));
 
     input.type = "checkbox";
-    input.id = "toDo" + numberList;
-    input.name = "toDo" + numberList;
+    input.id = `toDoTask${numberList}`;
+    input.name = `toDoTask${numberList}`;
 
     label.htmlFor = input.id;
+    console.log(input.id);
     label.textContent = valueText;
     deleteButton.textContent = "Delete";
     deleteButton.type = "button";
-    deleteButton.className = "toDo" + numberList;
+    deleteButton.className = `toDoTask${numberList}`;
 
     deleteButton.addEventListener("click", deleteTask);
+
+    console.log(li);
+
+    // input.addEventListener("click", checkedInput(input));
 
     return { li, input, label, deleteButton };
   }
@@ -87,7 +99,6 @@ function renderTasks() {
 
 addTaskbutton.addEventListener("click", function (event) {
   addnewTask(event);
-  // deleteInput();
   console.log(numberList);
 });
 renderTasks();
