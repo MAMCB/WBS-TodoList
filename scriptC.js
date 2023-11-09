@@ -6,16 +6,50 @@ function addTask() {
         alert("Please enter a task");
     } else {
         let li = document.createElement("li");
-        li.classList.add("toDoList")
-        li.innerHTML = inputBox.value;
+        li.classList.add("toDoList");
+        
+        let taskText = document.createElement("span");
+        taskText.textContent = inputBox.value;
+
+        let textContainer = document.createElement("div");
+        textContainer.classList.add("textContainer");
+        textContainer.appendChild(taskText);
+        li.appendChild(textContainer);
+
+        let buttonsContainer = document.createElement("div");
+        buttonsContainer.classList.add("buttonsContainer");
+
+        let deleteBtn = document.createElement("span");
+        deleteBtn.innerHTML = "\u00d7";
+        deleteBtn.classList.add("deleteBtn");
+        buttonsContainer.appendChild(deleteBtn);
+
+        let editBtn = document.createElement("button");
+        editBtn.innerHTML = "Edit";
+        editBtn.classList.add("editBtn","customEditBtn"); 
+        buttonsContainer.appendChild(editBtn);
+        li.appendChild(buttonsContainer);
+
         listContainer.appendChild(li);
-        let span = document.createElement("span");
-        span.innerHTML = "\u00d7";
-        li.appendChild(span);
+
+        editBtn.addEventListener("click", function () {
+            let newText = prompt("Edit your task", taskText.textContent);
+            if (newText !== null) {
+                taskText.textContent = newText;
+            }
+            saveData();
+        });
+
+        deleteBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            li.remove();
+            saveData();
+        });
     }
     inputBox.value = '';
     saveData();
 }
+
 
 listContainer.addEventListener('click', function (event) {
     if (event.target.tagName === 'LI') {

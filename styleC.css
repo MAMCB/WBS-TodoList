@@ -85,11 +85,17 @@ button{
     color: #555;
     text-decoration: line-through;
 }
+.textContainer {
+    .textContainer {
+        display: inline-block;
+        position: relative;
+    }
+}
 
 .toDoList.checked::before{
     background-image: url(resources/checkmark.png)
 }
-.toDoList span{
+.toDoList span.deleteBtn{
     position: absolute;
     right: 0;
     top: 5px;
@@ -100,6 +106,15 @@ button{
     line-height: 40px;
     text-align: center;
 }
-.toDoList span:hover{
+.toDoList span.deleteBtn:hover{
     color: #ff5945;
+}
+
+.editBtn {
+    width: 40px;
+    height: 20px; 
+    position: absolute;
+    right: 60px; 
+    top: 1rem;
+    padding: 0 5px;
 }
