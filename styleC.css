@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-.container{
+.todoContainer{
     width: 100%;
     min-height: 100vh;
     background: linear-gradient(135deg, #153677, #4e085f);
@@ -33,12 +33,15 @@ margin-bottom: 20px;
 
 .row{
     display: flex;
-    align-items: center;
+     align-items: center;
     justify-content: space-between;
     background-color: #edeef0;
     border-radius: 30px;
     padding-left: 20px;
     margin-bottom: 25px;
+}
+.row>*{
+    width: 90px;
 }
 input{
     flex: 1;
@@ -58,7 +61,7 @@ button{
     border-radius: 40px;
 }
 
-ul li{
+.toDoList{
     list-style: none;
     font-size: 17px;
     padding: 12px 8px 12px 50px;
@@ -66,7 +69,7 @@ ul li{
     cursor: pointer;
     position: relative;
 }
-ul li::before{
+.toDoList::before{
     content: '';
     position: absolute;
     height: 28px;
@@ -78,15 +81,21 @@ ul li::before{
     top:12px;
     left: 8px;
 }
-ul li.checked{
+.toDoList.checked{
     color: #555;
     text-decoration: line-through;
 }
+.textContainer {
+    .textContainer {
+        display: inline-block;
+        position: relative;
+    }
+}
 
-ul li.checked::before{
+.toDoList.checked::before{
     background-image: url(resources/checkmark.png)
 }
-ul li span{
+.toDoList span.deleteBtn{
     position: absolute;
     right: 0;
     top: 5px;
@@ -97,6 +106,15 @@ ul li span{
     line-height: 40px;
     text-align: center;
 }
-ul li span:hover{
-    background: #edeef0;
+.toDoList span.deleteBtn:hover{
+    color: #ff5945;
+}
+
+.editBtn {
+    width: 40px;
+    height: 20px; 
+    position: absolute;
+    right: 60px; 
+    top: 1rem;
+    padding: 0 5px;
 }
