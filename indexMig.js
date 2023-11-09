@@ -39,45 +39,36 @@ function renderList()
 }
 
 function createTaskList(rootTask, parentElement) {
-    let listElement;
   for (let i = 0; i < rootTask.subTasks.length; i++) {
-    if(parentElement.parentNode.parentNode.parentNode.tagName==="UL")
-    {
-         listElement = createListElements(rootTask.subTasks[i].name, false);
-    }
-    else
-    {
-         listElement = createListElements(rootTask.subTasks[i].name, true);
-    }
-    
-    
+    const subtask = rootTask.subTasks[i];
+    const isSubtask = !!subtask.parent;
 
-    if (rootTask.subTasks[i].checked) {
-      listElement.checked = true;
+    const listElement = createListElements(subtask.name, isSubtask);
+
+    if (subtask.checked) {
+      listElement.children[0].checked = true;
     }
 
     parentElement.appendChild(listElement);
 
     // Recurse into nested subTasks
-    if (rootTask.subTasks[i].subTasks.length > 0) {
-      let  dropDownIcon =document.createElement("i");
-     dropDownIcon.classList.add("fa-solid","fa-caret-down","fa-fade");
-     dropDownIcon.style.fontSize="30px";
-     dropDownIcon.style.cursor="pointer";
-     dropDownIcon.addEventListener("click",toggleSubtasks);
-     listElement.appendChild(dropDownIcon);
-     if(listElement.parentNode != taskList)
-     {
-        listElement.style.backgroundColor="#E1CDFA";
-        listElement.style.width="70%";
-        listElement.style.marginLeft="2rem";
-     }
-     
-      createTaskList(rootTask.subTasks[i], listElement);
+    if (subtask.subTasks.length > 0) {
+      const dropDownIcon = document.createElement("i");
+      dropDownIcon.classList.add("fa-solid", "fa-caret-down", "fa-fade");
+      dropDownIcon.style.fontSize = "30px";
+      dropDownIcon.style.cursor = "pointer";
+      dropDownIcon.addEventListener("click", toggleSubtasks);
+      listElement.appendChild(dropDownIcon);
+      if (!isSubtask) {
+        listElement.style.backgroundColor = "#E1CDFA";
+        listElement.style.width = "70%";
+        listElement.style.marginLeft = "2rem";
+      }
+
+      createTaskList(subtask, listElement);
     }
   }
 }
-
 
 
 function addTask(){
