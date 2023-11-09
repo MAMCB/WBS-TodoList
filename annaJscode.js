@@ -1,31 +1,38 @@
 const toDoUl = document.querySelector(".toDoList");
 const addTaskbutton = document.querySelector(".addTask");
 
+// Initializing variables to store tasks and list numbers
 let tasks = [];
 let numberList = 0;
 
+// Function to save tasks to local storage
 const savetoLocalStorage = () => {
   const stringTasks = JSON.stringify(tasks);
   localStorage.setItem("tasks", stringTasks);
 };
 
+// Function to load tasks from local storage
 const loadfromlocalStorage = () => {
   const parsedTasks = JSON.parse(localStorage.getItem("tasks"));
   tasks = parsedTasks ? parsedTasks : [];
 
+  // Rendering tasks on the page
   renderTasks();
 };
 
+// Function to get the value of the input field
 function textValue() {
   const textTask = document.getElementById("type").value;
   return textTask;
 }
 
+// Function to clear the input field
 function deleteInput() {
   const textTask = document.getElementById("type");
   textTask.value = "";
 }
 
+// Function to delete a task from the DOM and the tasks array
 function deleteTask(event, index) {
   const button = event.target;
 
@@ -37,6 +44,7 @@ function deleteTask(event, index) {
   console.log(numberList, index);
 }
 
+// Function to edit a task
 function editTask(index, label) {
   const promt = window.prompt("edit your task");
   if (promt !== "" && promt !== null) {
@@ -50,11 +58,13 @@ function editTask(index, label) {
   }
 }
 
+// Function to add a task to the tasks array
 function addTaskToArray(valueText, checked) {  // add status checked to array, but not set false
   tasks.push({ name: valueText, checked: checked });
   console.log("Add task to Array with value: ", tasks);
 }
 
+// Function to delete a task from the tasks array
 function deleteTaskfromArray(index) {
   tasks.splice(index, 1);
   console.log(tasks);
@@ -62,6 +72,7 @@ function deleteTaskfromArray(index) {
   savetoLocalStorage();
 }
 
+// function to add a value from Input field
 function addnewTask(event) {
   event.preventDefault();
   const title = textValue();
@@ -76,6 +87,7 @@ function addnewTask(event) {
   deleteInput();
 }
 
+// Function to handle checking/unchecking of tasks
  function checkedInput(input,index) {
   if (!input.checked) {
        tasks[index].checked = false;
@@ -89,6 +101,7 @@ function addnewTask(event) {
 
  }
 
+ // Function to create a new task element in the DOM
 function createNewToDo(valueText, index, checked) {
   if (valueText !== "") {
     const li = toDoUl.appendChild(document.createElement("li"));
@@ -129,6 +142,7 @@ function createNewToDo(valueText, index, checked) {
   }
 }
 
+// Function to render tasks on the page
 function renderTasks() {
   toDoUl.textContent = "";
 
@@ -141,10 +155,12 @@ function renderTasks() {
   });
 }
 
+// Adding event listener for adding a new task
 addTaskbutton.addEventListener("click", function (event) {
   addnewTask(event);
 });
 
+// Loading tasks from local storage when the page loads
 loadfromlocalStorage();
 
 console.log(tasks);
