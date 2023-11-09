@@ -1,0 +1,126 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    box-sizing: border-box;
+}
+
+h1, #taskTitle {
+    background: rgb(63, 94, 251);
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+    color: #fff;
+    padding: 20px;
+    margin: 0;
+    font-size: 30px;
+    text-align: center;
+    font-family: 'Mooli', sans-serif;
+}
+
+#main-to-do {
+    text-align: center;
+    max-width: 600px;
+    margin: 20px auto;
+    background: rgb(63, 94, 251);
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(109, 157, 16, 1) 100%);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#taskTitle {
+    font-size: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#taskInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #e7eff5;
+    background-color: transparent;
+    color: #f1e3e3;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    font-family: 'Mooli', sans-serif;
+}
+
+#taskInput::placeholder {
+    color: #c4afaf;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: solid 1px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-bottom: 5px;
+}
+
+button:hover {
+    background-color: #b92929;
+}
+
+#taskList {
+    text-align: left;
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.task:hover {
+    transform: scale(1.02);
+    background-color: rgb(193, 182, 182);
+}
+
+.task input[type="checkbox"] {
+    margin-right: 10px;
+    
+}
+
+.task span {
+    font-size: 18px;
+    color: #333333;
+    flex-grow: 1;
+}
+
+.task select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #b92929;
+}
+
+.task button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-left: 5px;
+}
+
+.task button:hover {
+    background-color: #420308;
+    transform: scale(1.05);
+    
+}
+
+
+
