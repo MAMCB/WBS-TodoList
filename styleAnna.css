@@ -1,11 +1,13 @@
 .toDoContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
+  padding-top: 5rem;
   align-items: center;
   align-content: center;
   background-color: antiquewhite;
-   font-family: "Sofia", sans-serif;
+  font-family: "Sofia", sans-serif;
+  min-height: 500px;
 }
 
 .toDoContainer li {
@@ -15,11 +17,62 @@
   padding: 0.5rem;
 }
 
-.toDoList * {
-  padding: 0rem 1rem;
+.toDoList label {
+  padding: 0rem 1rem 0rem 0rem;
 }
 
 .toDoList {
   padding: 0;
   list-style: none;
 }
+
+/*Change check style*/
+
+.toDoList label {
+  color: #f875aa;
+  font-size: 2rem;
+  position: relative;
+  display: inline-block;
+  padding-left: 3rem;
+}
+
+.toDoList label::before {
+  content: "";
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  /* padding: 4px; */
+
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  background-color: #ffdfdf;
+  box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, 0.3),
+    0px 1px 0px 0px rgba(255, 255, 255, 0.8);
+}
+
+.toDoList input[type="checkbox"] {
+  display: none;
+}
+
+.toDoList label::before{
+  border-radius: 15px;
+}
+
+.toDoList input[type="checkbox"]:checked + label::before {
+  content: "\2713";
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+  font-size: 40px;
+  color: #F875AA;
+  text-align: center;
+    line-height: 12px;
+}
+
+
+.toDoList button{
+  margin-left: 1rem;
+  max-height: 30px;
+  align-self: center;
+}
+
