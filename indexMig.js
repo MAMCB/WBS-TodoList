@@ -20,7 +20,7 @@ function saveList()
 {
     const serializableRootTask = taskToSerializable(rootParentTask);
     localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
-    console.log(rootParentTask);
+    
    
 }
 
@@ -54,8 +54,7 @@ function createTaskList(rootTask, parentElement) {
          listElement = createListElements(rootTask.subTasks[i].name, true);
     }
     
-    console.log(rootTask.subTasks[i].checked);
-    console.log(rootTask.subTasks[i].name);
+  
 
     if (rootTask.subTasks[i].checked) {
       listElement.children[0].checked = true;
@@ -71,7 +70,9 @@ function createTaskList(rootTask, parentElement) {
      dropDownIcon.style.cursor="pointer";
      dropDownIcon.addEventListener("click",toggleSubtasks);
      listElement.appendChild(dropDownIcon);
-     if(listElement.parentNode != taskList)
+     console.log(listElement.parentNode);
+     console.log(listElement);
+     if(listElement.parentNode.tagName !== "UL")
      {
         listElement.style.backgroundColor="#E1CDFA";
         listElement.style.width="70%";
