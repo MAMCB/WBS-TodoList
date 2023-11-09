@@ -20,6 +20,7 @@ function saveList()
 {
     const serializableRootTask = taskToSerializable(rootParentTask);
     localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
+    console.log(rootParentTask);
    
 }
 
@@ -53,10 +54,11 @@ function createTaskList(rootTask, parentElement) {
          listElement = createListElements(rootTask.subTasks[i].name, true);
     }
     
-    
+    console.log(rootTask.subTasks[i].checked);
+    console.log(rootTask.subTasks[i].name);
 
     if (rootTask.subTasks[i].checked) {
-      listElement.checked = true;
+      listElement.children[0].checked = true;
     }
 
     parentElement.appendChild(listElement);
@@ -238,7 +240,10 @@ function toggleSubtasks(){
 function updateParents()
 {   const parentTask = getParentTask(this.parentNode);
     const greatParentTask = getParentTask(this.parentNode.parentNode);
-    parentTask.checked=parentTask.checked?false:true;
+    
+    parentTask.checked=this.checked;
+    
+     saveList();
     const parent=this.parentNode.parentNode;
     if(parent.tagName==="UL")
     {
@@ -272,7 +277,7 @@ function updateParents()
      parent.children[0].checked=true;
      greatParentTask.checked=true;
      
-
+     saveList();
 
 }
 
