@@ -2,6 +2,22 @@
 const taskList = document.getElementById("taskList");
 const newTask = document.getElementById("new_task");
 
+class Task{
+    constructor(name,parent,parentIndex)
+    {   
+        this.name = name;
+        this.parent = parent;
+        this.parentIndex = parentIndex;
+        this.checked = false;
+        this.subTasks = [];
+
+    }
+}
+
+const rootParentTask = new Task ("Root UL",null,null);
+
+
+
 
 function addTask(){
     
@@ -15,6 +31,8 @@ function addTask(){
     
     
     taskList.appendChild(createListElements(submittedValue,true))
+    rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask
+        ));
     newTask.value="";
 }
 
@@ -61,6 +79,7 @@ function removeTask(){
 }
 
 function expandDropDown(){
+    const parentTask = getParentTask(this.parentNode);
     const subTaskValue =prompt("Add sub task");
     let newSubTask;
     let dropDownIcon;
@@ -71,11 +90,13 @@ function expandDropDown(){
     if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
+        parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
         
         
     }
     else{
           newSubTask =createListElements(subTaskValue,true);
+          parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
     }
      
     
@@ -232,4 +253,38 @@ function createListElements(value,subTask)
 
     return newItemDiv;
 }
+
+function createNewTask(value,parent)
+{
+    
+    const task = new Task(value,parent,parent.subTasks.length)
+    return task;
+}
+
+function getParentTask(node)
+{
+    let count = 0;
+  while (node !== null && node.tagName !== 'UL') {
+    node = node.parentNode;
+    count++;
+  }
+ return findNestedTask(rootParentTask,count);
+}
+
+function findNestedTask(rootTask, n) {
+  if (n === 0) {
+    return rootTask;
+  }
+  
+  for (const subtask of rootTask.subTasks) {
+    const nestedTask = findNestedTask(subtask, n - 1);
+    if (nestedTask) {
+      return nestedTask;
+    }
+  }
+  
+  return null;
+}
+
+
 
