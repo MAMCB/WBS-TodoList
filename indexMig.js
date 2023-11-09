@@ -372,8 +372,6 @@ function taskToSerializable(task) {
     checked: task.checked,
     subTasks: task.subTasks.map(subTask => taskToSerializable(subTask))
   };
-  // Remove circular reference
-  delete serializable.parent;
   return serializable;
 }
 
@@ -382,7 +380,6 @@ function taskToSerializable(task) {
 
 
 // To retrieve the task from local storage and convert it back to a Task object:
-
 
 function serializableToTask(serializable, parent = null) {
   const task = new Task(serializable.name, parent, serializable.parentIndex);
