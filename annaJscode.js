@@ -1,13 +1,20 @@
-const typeListener = document.getElementById("type");
-
 const toDoUl = document.querySelector(".toDoList");
-
 const addTaskbutton = document.querySelector(".addTask");
 
-const tasks = [];
-
-// count number of li
+let tasks = [];
 let numberList = 0;
+
+const savetoLocalStorage = () => {
+  const stringTasks = JSON.stringify(tasks);
+  localStorage.setItem("tasks", stringTasks);
+};
+
+const loadfromlocalStorage = () => {
+  const parsedTasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks = parsedTasks ? parsedTasks : [];
+
+  renderTasks();
+};
 
 function textValue() {
   const textTask = document.getElementById("type").value;
@@ -20,37 +27,39 @@ function deleteInput() {
 }
 
 function deleteTask(event, index) {
-  console.log(event);
-  console.log(index);
   const button = event.target;
-  console.log(button);
 
   const li = button.parentElement;
   toDoUl.removeChild(li);
   deleteTaskfromArray(index);
+  savetoLocalStorage();
   numberList--;
-  console.log(numberList);
+  console.log(numberList, index);
 }
 
-function editTask(event, index , label){
-  const button = event.target;
-  const promt = window.prompt("edit your task")
-  if (promt !== "") {
+function editTask(index, label) {
+  const promt = window.prompt("edit your task");
+  if (promt !== "" && promt !== null) {
     label.textContent = promt;
-    tasks.splice(index,1,promt)
-    console.log(tasks)
+    tasks[index].name = promt;
+    savetoLocalStorage();
+  } else if (promt === null) {
+    alert("You cancell editing");
+  } else {
+    alert("You write nothing");
   }
-  else alert("You write nothing")
 }
 
-function addTaskToArray(valueText) {
-  tasks.push(valueText);
-  console.log("Add task to Array with value: ", valueText);
+function addTaskToArray(valueText, checked) {  // add status checked to array, but not set false
+  tasks.push({ name: valueText, checked: checked });
+  console.log("Add task to Array with value: ", tasks);
 }
 
 function deleteTaskfromArray(index) {
   tasks.splice(index, 1);
-  console.log("Delete a task from Array on index: ", index);
+  console.log(tasks);
+  renderTasks();
+  savetoLocalStorage();
 }
 
 function addnewTask(event) {
@@ -58,6 +67,7 @@ function addnewTask(event) {
   const title = textValue();
   if (title) {
     addTaskToArray(title);
+    savetoLocalStorage();
     numberList++;
     renderTasks();
   } else {
@@ -66,14 +76,20 @@ function addnewTask(event) {
   deleteInput();
 }
 
-// function checkedInput(input) {
-//   if (!input) {
-//     input.checked = true;
-//     console.log(input.checked);
-//   }
-// }
+ function checkedInput(input,index) {
+  if (!input.checked) {
+       tasks[index].checked = false;
+       savetoLocalStorage();
+     }
+     else if (input.checked) {
+       tasks[index].checked = true;
+       savetoLocalStorage();
+       console.log("its checked")
+     }
 
-function createNewToDo(valueText, index) {
+ }
+
+function createNewToDo(valueText, index, checked) {
   if (valueText !== "") {
     const li = toDoUl.appendChild(document.createElement("li"));
     const input = li.appendChild(document.createElement("input"));
@@ -84,6 +100,9 @@ function createNewToDo(valueText, index) {
     input.type = "checkbox";
     input.id = "toDo" + index;
     input.name = input.id;
+    input.checked = checked; // set the check status
+
+    input.addEventListener("click", () => checkedInput(input, index));
 
     label.htmlFor = input.id;
     console.log(input.id);
@@ -91,13 +110,14 @@ function createNewToDo(valueText, index) {
 
     editButton.textContent = "Edit";
     editButton.type = "button";
+
     deleteButton.className = input.id;
 
     deleteButton.textContent = "Delete";
     deleteButton.type = "button";
     deleteButton.className = input.id;
 
-    editButton.addEventListener("click", (event) => editTask(event,index, label));
+    editButton.addEventListener("click", (event) => editTask(index, label));
 
     deleteButton.addEventListener("click", (event) => deleteTask(event, index));
 
@@ -111,15 +131,20 @@ function createNewToDo(valueText, index) {
 
 function renderTasks() {
   toDoUl.textContent = "";
+
   tasks.forEach((task, index) => {
-    console.log("Task??", task, index);
-    const newCheckTask = createNewToDo(task, index);
+    const taskName = task.name;
+    const checked = task.checked || false;  // set to false if not defined
+    console.log("Task??", taskName, index, checked);
+    const newCheckTask = createNewToDo(taskName, index, checked);
     toDoUl.appendChild(newCheckTask.li);
   });
 }
 
 addTaskbutton.addEventListener("click", function (event) {
   addnewTask(event);
-  console.log(tasks.length);
 });
-renderTasks();
+
+loadfromlocalStorage();
+
+console.log(tasks);
