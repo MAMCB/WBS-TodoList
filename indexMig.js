@@ -14,8 +14,46 @@ class Task{
     }
 }
 
-const rootParentTask = new Task ("Root UL",null,null);
+let rootParentTask;
 
+function saveList()
+{
+    const serializableRootTask = taskToSerializable(rootParentTask);
+    localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
+   
+}
+
+function renderList()
+{
+    if(!localStorage.getItem("taskList"))
+    {
+        rootParentTask = new Task ("Root UL",null,null);
+    }
+    else
+    {   
+        const rootTaskFromLocalStorage= JSON.parse(localStorage.getItem("taskList"));
+       rootParentTask = serializableToTask(rootTaskFromLocalStorage);
+        createTaskList(rootParentTask,taskList);
+    }
+    
+}
+
+function createTaskList(rootTask, parentElement) {
+  for (let i = 0; i < rootTask.subTasks.length; i++) {
+    const listElement = createListElements(rootTask.subTasks[i].name, true);
+
+    if (rootTask.subTasks[i].checked) {
+      listElement.checked = true;
+    }
+
+    parentElement.appendChild(listElement);
+
+    // Recurse into nested subTasks
+    if (rootTask.subTasks[i].subTasks.length > 0) {
+      createTaskList(rootTask.subTasks[i], listElement);
+    }
+  }
+}
 
 
 
@@ -33,14 +71,17 @@ function addTask(){
     taskList.appendChild(createListElements(submittedValue,true))
     rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask
         ));
+        saveList();
     newTask.value="";
 }
 
 function editTask(){
     const newTask=prompt("Change task");
     if(newTask)
-    {
+    {   const parentTask = getParentTask(this.parentNode);
+        parentTask.name=newTask;
         this.parentNode.children[1].innerText=newTask;
+        saveList();
     }
     else
     {
@@ -54,7 +95,7 @@ function editTask(){
 function removeTask(){
     const children = this.parentNode.parentNode.children;
     
-    
+    //check if there are no subtasks left and if so remove dropdown icon
     let subTaskCount=0;
     for(let i =0; i<children.length;i++)
     {
@@ -69,6 +110,12 @@ function removeTask(){
     {
         this.parentNode.parentNode.removeChild(this.parentNode.parentNode.children[5]);
     }
+
+
+    const parentTask = getParentTask(this.parentNode);
+    const greatParentTask =getParentTask(this.parentNode.parentNode);
+    greatParentTask.subTasks.splice(greatParentTask.subTasks.indexOf(parentTask),1);
+    saveList();
     
     this.parentNode.parentNode.removeChild(this.parentNode);
     
@@ -91,12 +138,14 @@ function expandDropDown(){
     {
         newSubTask =createListElements(subTaskValue,false);
         parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
+        saveList();
         
         
     }
     else{
           newSubTask =createListElements(subTaskValue,true);
           parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
+          saveList();
     }
      
     
@@ -161,7 +210,9 @@ function toggleSubtasks(){
 }
 
 function updateParents()
-{
+{   const parentTask = getParentTask(this.parentNode);
+    const greatParentTask = getParentTask(this.parentNode.parentNode);
+    parentTask.checked=parentTask.checked?false:true;
     const parent=this.parentNode.parentNode;
     if(parent.tagName==="UL")
     {
@@ -187,11 +238,13 @@ function updateParents()
          }
          else{
             parent.children[0].checked=false;
+            greatParentTask.checked=false;
             return;
          }
      }
      
      parent.children[0].checked=true;
+     greatParentTask.checked=true;
      
 
 
@@ -285,6 +338,46 @@ function findNestedTask(rootTask, n) {
   
   return null;
 }
+
+renderList();
+
+// A function to convert the Task object into a serializable structure
+function taskToSerializable(task) {
+  const serializable = {
+    name: task.name,
+    parentIndex: task.parentIndex,
+    checked: task.checked,
+    subTasks: task.subTasks.map(subTask => taskToSerializable(subTask))
+  };
+  // Remove circular reference
+  delete serializable.parent;
+  return serializable;
+}
+
+// // Save the serializable structure to local storage
+// const rootTask = new Task("Root Task", null, null);
+// rootTask.subTasks.push(new Task("Subtask 1", rootTask, 0));
+// rootTask.subTasks.push(new Task("Subtask 2", rootTask, 1));
+// rootTask.subTasks[1].subTasks.push(new Task("Nested Subtask 1", rootTask.subTasks[1], 0));
+
+
+
+// To retrieve the task from local storage and convert it back to a Task object:
+
+
+function serializableToTask(serializable, parent = null) {
+  const task = new Task(serializable.name, parent, serializable.parentIndex);
+  task.checked = serializable.checked;
+  serializable.subTasks.forEach((subTaskData, index) => {
+    task.subTasks.push(serializableToTask(subTaskData, task));
+  });
+  return task;
+}
+
+
+
+
+
 
 
 
