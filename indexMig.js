@@ -377,11 +377,7 @@ function taskToSerializable(task) {
   return serializable;
 }
 
-// // Save the serializable structure to local storage
-// const rootTask = new Task("Root Task", null, null);
-// rootTask.subTasks.push(new Task("Subtask 1", rootTask, 0));
-// rootTask.subTasks.push(new Task("Subtask 2", rootTask, 1));
-// rootTask.subTasks[1].subTasks.push(new Task("Nested Subtask 1", rootTask.subTasks[1], 0));
+
 
 
 
