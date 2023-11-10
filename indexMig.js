@@ -203,7 +203,7 @@ function expandDropDown(){
     {
         return;
     }
-    if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
+    if(this.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
         parentTask.subTasks.push(createNewTask(subTaskValue,parentTask,newSubTask.getAttribute("id")));
