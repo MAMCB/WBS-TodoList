@@ -109,18 +109,48 @@ function addTask(){
 }
 
 function editTask(){
-    const newTask=prompt("Change task");
-    if(newTask)
-    {   const parentTask = findTaskByNode(this.parentNode.id,rootParentTask);
+    
+    let newTask;
+    const parentElement = this.parentNode;
+    const oldTask =parentElement.children[1].innerText
+    console.log(oldTask);
+    const newInput =document.createElement("input");
+    newInput.type="text";
+    newInput.placeholder=oldTask;
+    parentElement.replaceChild(newInput,parentElement.children[1]);
+    const confirmButton = document.createElement("button");
+    confirmButton.classList.add("btn","btn-primary");
+    confirmButton.innerText="Confirm";
+    confirmButton.addEventListener("click",()=>{
+        newTask=newInput.value;
+        const editButton = document.createElement("button");
+    editButton.innerText="Edit";
+    editButton.classList.add("btn");
+    editButton.classList.add("btn-success");
+    editButton.addEventListener("click",editTask);
+    parentElement.replaceChild(editButton,parentElement.children[2]);
+     const newItemLabel = document.createElement("label");
+    newItemLabel.classList.add("form-check-label");
+    parentElement.replaceChild(newItemLabel,parentElement.children[1])
+   if(newTask)
+    {   console.log(parentElement.id);
+        const parentTask = findTaskByNode(parentElement.id,rootParentTask);
         parentTask.name=newTask;
-        this.parentNode.children[1].innerText=newTask;
+        parentElement.children[1].innerText=newTask;
         saveList();
     }
-    else
-    {
+   
+   else
+    {    parentElement.children[1].innerText=oldTask;
         return;
     }
-     
+
+
+    })
+    
+    
+    
+      parentElement.replaceChild(confirmButton,parentElement.children[2]);
    
     
 }
