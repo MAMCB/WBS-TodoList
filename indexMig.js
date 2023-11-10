@@ -100,8 +100,9 @@ function addTask(){
     }
     
     const task = createListElements(submittedValue,true);
-    console.log(task);
-    taskList.appendChild(task)
+    const listItem = document.createElement("li");
+    listItem.appendChild(task);
+    taskList.appendChild(listItem);
     rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask,task.getAttribute("id")
         ));
         saveList();
@@ -169,7 +170,7 @@ function removeTask(){
             subTaskCount++;
         }
     }
-    if(this.parentNode.parentNode.tagName!=="UL" && subTaskCount===1 )
+    if(this.parentNode.parentNode.parentNode.tagName!=="UL" && subTaskCount===1 )
     {
         this.parentNode.parentNode.removeChild(this.parentNode.parentNode.children[5]);
     }
@@ -202,7 +203,7 @@ function expandDropDown(){
     {
         return;
     }
-    if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
+    if(this.parentNode.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
         parentTask.subTasks.push(createNewTask(subTaskValue,parentTask,newSubTask.getAttribute("id")));
@@ -326,7 +327,7 @@ function createListElements(value,subTask)
     const newElements=[];
     //creates div parent element and add its classes
     const newItemDiv = document.createElement("div")
-    newItemDiv.classList.add("form-check");
+    newItemDiv.classList.add("form-check","task");
 
     //creates check input element,adds its classes and pushes it to newElements array
     const newCheckInput = document.createElement("input");
@@ -460,8 +461,13 @@ function generateUniqueId() {
   return Date.now().toString();
 }
 
-function clearStorage(){
+function clearList(){
     localStorage.clear();
+   for(let i=0;i<taskList.children.length;i++)
+   {
+    taskList.removeChild(taskList.children[i]);
+   }
+   
 }
 
 
