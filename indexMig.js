@@ -100,9 +100,9 @@ function addTask(){
     }
     
     const task = createListElements(submittedValue,true);
-    const listItem = document.createElement("li");
-    listItem.appendChild(task);
-    taskList.appendChild(listItem);
+    // const listItem = document.createElement("li");
+    // listItem.appendChild(task);
+    taskList.appendChild(task);
     rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask,task.getAttribute("id")
         ));
         saveList();
@@ -170,7 +170,7 @@ function removeTask(){
             subTaskCount++;
         }
     }
-    if(this.parentNode.parentNode.parentNode.tagName!=="UL" && subTaskCount===1 )
+    if(this.parentNode.parentNode.tagName!=="UL" && subTaskCount===1 )
     {
         this.parentNode.parentNode.removeChild(this.parentNode.parentNode.children[5]);
     }
@@ -203,7 +203,7 @@ function expandDropDown(){
     {
         return;
     }
-    if(this.parentNode.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
+    if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
         parentTask.subTasks.push(createNewTask(subTaskValue,parentTask,newSubTask.getAttribute("id")));
