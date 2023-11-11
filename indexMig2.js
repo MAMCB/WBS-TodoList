@@ -9,7 +9,7 @@ class Task{
         this.name = name;
         this.parent = parent;
         this.parentIndex = parentIndex;
-        this.taskID = displaySelf(this.name,this.parent);
+        this.taskID = displaySelf(this.name,this.parent,this);
         this.checked = false;
         this.subTasks = [];
 
@@ -25,7 +25,7 @@ function addTask(){
     saveList();
 }
 
-function displaySelf(taskName,parent)
+function displaySelf(taskName,parent,task)
     {
         if(parent===null)
         {
@@ -40,7 +40,8 @@ function displaySelf(taskName,parent)
         const newCheckInput = document.createElement("input");
         newCheckInput.classList.add("form-check-input");
         newCheckInput.type="checkbox";
-        newCheckInput.addEventListener("click",updateParents);
+        newCheckInput.checked=task.checked;
+        newCheckInput.addEventListener("click",checkTask);
         newElements.push(newCheckInput);
     
         //create label element,adds its classes and values and pushes it to newElements array
@@ -115,9 +116,14 @@ function generateUniqueId() {
   return Date.now().toString();
 }
 
-function updateParents()
+function checkTask()
 {
-
+    const task = findTask(this.parentNode.id);
+    
+    task.checked=!task.checked;
+    console.log(task);
+    console.log(rootParentTask);
+    saveList();
 }
 
 function editTask()
@@ -295,6 +301,7 @@ function createTaskList()
 
 // A function to convert the Task object into a serializable structure
 function taskToSerializable(task) {
+    console.log(task);
   const serializable = {
     name: task.name,
     parentIndex: task.parentIndex,
@@ -302,6 +309,7 @@ function taskToSerializable(task) {
     checked: task.checked,
     subTasks: task.subTasks.map(subTask => taskToSerializable(subTask))
   };
+  console.log(serializable);
   return serializable;
 }
 

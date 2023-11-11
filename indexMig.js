@@ -279,7 +279,7 @@ function toggleSubtasks(){
      }
 }
 
-function updateParents()
+function checkTask()
 {   const parentTask = findTaskByNode(this.parentNode.id,rootParentTask);
     const greatParentTask = findTaskByNode(this.parentNode.parentNode.id,rootParentTask);
     
@@ -334,7 +334,7 @@ function createListElements(value,subTask)
     const newCheckInput = document.createElement("input");
     newCheckInput.classList.add("form-check-input");
     newCheckInput.type="checkbox";
-    newCheckInput.addEventListener("click",updateParents);
+    newCheckInput.addEventListener("click",checkTask);
     newElements.push(newCheckInput);
     
     //create label element,adds its classes and values and pushes it to newElements array
