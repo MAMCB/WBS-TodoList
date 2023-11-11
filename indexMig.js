@@ -28,6 +28,7 @@ function saveList()
 
 function renderList()
 {
+  localStorage.clear();
     if(!localStorage.getItem("taskList"))
     {
 

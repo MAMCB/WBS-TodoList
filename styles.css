@@ -89,3 +89,7 @@ body{
     background: rgb(182, 235, 245);
         background: linear-gradient(90deg, rgba(182, 235, 245, 1) 0%, rgba(160, 136, 116, 1) 51%, rgba(147, 175, 181, 1) 97%);
 }
+
+img{
+    width: 30rem;
+}
