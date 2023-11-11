@@ -80,8 +80,11 @@ function displaySelf(taskName,parent)
         {
             newItemDiv.appendChild(newElements[i]);
         }
-        const itemID = generateUniqueId();
-        newItemDiv.id=`task_${itemID}`;
+        
+            const itemID = generateUniqueId();
+            newItemDiv.id=`task_${itemID}`;
+        
+        
         if(parent.taskID===taskList.id)
         {      
             const listItem = document.createElement("li");
@@ -311,7 +314,7 @@ function taskToSerializable(task) {
 function serializableToTask(serializable, parent=null) {
     
   const task = new Task(serializable.name,parent, serializable.parentIndex);
-  task.taskID = serializable.taskID;
+  //task.taskID = serializable.taskID;
   task.checked = serializable.checked;
   serializable.subTasks.forEach((subTaskData, index) => {
     task.subTasks.push(serializableToTask(subTaskData, task));
