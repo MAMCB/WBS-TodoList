@@ -176,12 +176,12 @@ function removeTask(){
     }
 
    
-    const Task = findTaskByNode(this.parentNode.getAttribute("id"),rootParentTask);
-    const parentTask =findTaskByNode(this.parentNode.parentNode.getAttribute("id"),rootParentTask);
-    console.log(parentTask);
+    // const Task = findTaskByNode(this.parentNode.getAttribute("id"),rootParentTask);
+    // const parentTask =findTaskByNode(this.parentNode.parentNode.getAttribute("id"),rootParentTask);
+    // console.log(parentTask);
    
-    parentTask.subTasks.splice(parentTask.subTasks.indexOf(Task),1);
-    saveList();
+    // parentTask.subTasks.splice(parentTask.subTasks.indexOf(Task),1);
+    // saveList();
     
     this.parentNode.parentNode.removeChild(this.parentNode);
     
