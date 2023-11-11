@@ -62,16 +62,16 @@ function displaySelf(taskName,parent)
         removeButton.classList.add("btn-danger");
         removeButton.addEventListener("click",removeTask);
         newElements.push(removeButton);
-        if(checkNestIndex(parent)<maximumNestedSubtasks)
-        {
-            const dropDownButton = document.createElement("button");
-            dropDownButton.classList.add("btn");
-            dropDownButton.classList.add("btn-secondary");
-            dropDownButton.innerText="Sub-tasks"
-            dropDownButton.addEventListener("click",addSubtask);
-            newElements.push(dropDownButton);
+        // if(checkNestIndex(parent)<maximumNestedSubtasks)
+        // {
+        //     const dropDownButton = document.createElement("button");
+        //     dropDownButton.classList.add("btn");
+        //     dropDownButton.classList.add("btn-secondary");
+        //     dropDownButton.innerText="Sub-tasks"
+        //     dropDownButton.addEventListener("click",addSubtask);
+        //     newElements.push(dropDownButton);
 
-        }
+        // }
    
 
 
@@ -119,17 +119,79 @@ function updateParents()
 
 function editTask()
 {
+    let newTask;
+    const parentElement = this.parentNode;
+    const oldTask =parentElement.children[1].innerText
+    
+    const newInput =document.createElement("input");
+    newInput.type="text";
+    newInput.placeholder=oldTask;
+    parentElement.replaceChild(newInput,parentElement.children[1]);
+    const confirmButton = document.createElement("button");
+    confirmButton.classList.add("btn","btn-primary");
+    confirmButton.innerText="Confirm";
+    confirmButton.addEventListener("click",()=>{
+        newTask=newInput.value;
+        const editButton = document.createElement("button");
+    editButton.innerText="Edit";
+    editButton.classList.add("btn");
+    editButton.classList.add("btn-success");
+    editButton.addEventListener("click",editTask);
+    parentElement.replaceChild(editButton,parentElement.children[2]);
+     const newItemLabel = document.createElement("label");
+    newItemLabel.classList.add("form-check-label");
+    parentElement.replaceChild(newItemLabel,parentElement.children[1])
+   if(newTask)
+    {   console.log(parentElement.id);
+        console.log(rootParentTask);
+        const parentTask = findTask(parentElement.id);
+        parentTask.name=newTask;
+        parentElement.children[1].innerText=newTask;
+        saveList();
+    }
+   
+   else
+    {    parentElement.children[1].innerText=oldTask;
+        return;
+    }
 
+
+    })
+    
+    
+    
+      parentElement.replaceChild(confirmButton,parentElement.children[2]);
+   
 }
 
 function removeTask()
 {
+    
+    
+    
+
+   
+    const Task = findTask(this.parentNode.id);
+    const parentTask =findTask(this.parentNode.parentNode.parentNode.id);
+    console.log(this.parentNode.parentNode.parentNode.id);
+    console.log(parentTask);
+   
+    parentTask.subTasks.splice(parentTask.subTasks.indexOf(Task),1);
+    saveList();
+    
+    this.parentNode.parentNode.removeChild(this.parentNode);
 
 }
 
 function addSubtask()
-{
-
+{   const subTaskValue =prompt("Add sub task");
+    const parentNodeId = this.parentNode.id;
+    const parentTask = findTask(parentNodeId);
+    const subTask = new Task(subTaskValue,parentTask,null);
+    parentTask.subTasks.push(subTask);
+    subTask.parentIndex=parentTask.subTasks.indexOf(subTask);
+    document.getElementById(subTask.taskID).classList.add("subTask");
+    saveList();
 }
 
 
@@ -152,36 +214,79 @@ function clearList(){
 localStorage.clear();
 }
 
-
-
-function createTaskList()
+function findTask(nodeID)
 {
-    // Retrieve from local storage
-const storedTaskJSON = localStorage.getItem("taskList");
-const storedTaskData = JSON.parse(storedTaskJSON);
-
-// Recreate Task object hierarchy
-rootParentTask = serializableToTask(storedTaskData);
-
-// Render tasks on the webpage
-
-for(let i=0;i<rootParentTask.subTasks.length;i++)
-{
-    rootParentTask.subTasks[i].taskID=rootParentTask.subTasks[i].displaySelf(rootParentTask.subTasks[i].name,rootParentTask.subTasks[i].parent);
+    if(nodeID===taskList.id)
+    {
+        return rootParentTask;
+    }
+    for(let i=0;i<rootParentTask.subTasks.length;i++)
+{  
+     if(rootParentTask.subTasks[i].taskID===nodeID)
+    {
+        return rootParentTask.subTasks[i];
+    }
+    
     for(let j=0;j< rootParentTask.subTasks[i].subTasks.length;j++)
     {
-        rootParentTask.subTasks[i].subTasks[j].taskID=rootParentTask.subTasks[i].subTasks[j].displaySelf(rootParentTask.subTasks[i].subTasks[j].name,rootParentTask.subTasks[i].subTasks[j].parent);
+        if(rootParentTask.subTasks[i].subTasks[j].taskID===nodeID)
+        {
+            return rootParentTask.subTasks[i].subTasks[j];
+        }
+       
         for(let k=0; k<rootParentTask.subTasks[i].subTasks[j].subTasks;k++)
         {
-            rootParentTask.subTasks[i].subTasks[j].subTasks[k].taskID=rootParentTask.subTasks[i].subTasks[j].subTasks[k].displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].parent);
+            if(rootParentTask.subTasks[i].subTasks[j].subTasks[k].taskID===nodeID)
+            {
+                return rootParentTask.subTasks[i].subTasks[j].subTasks[k];
+            }
+            
             for(let l=0; l<rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks;l++)
             {
-                rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].taskID=rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].parent);
+                if(rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].taskID===nodeID)
+                {
+                    return rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l];
+                }
+                
             }
         }
     }
     
 }
+
+}
+
+
+
+function createTaskList()
+{
+    // Retrieve from local storage
+    const storedTaskJSON = localStorage.getItem("taskList");
+    const storedTaskData = JSON.parse(storedTaskJSON);
+
+    // Recreate Task object hierarchy
+    rootParentTask = serializableToTask(storedTaskData);
+
+    // Render tasks on the webpage
+
+    // for(let i=0;i<rootParentTask.subTasks.length;i++)
+    // {
+    //     rootParentTask.subTasks[i].taskID=displaySelf(rootParentTask.subTasks[i].name,rootParentTask.subTasks[i].parent);
+    //     for(let j=0;j< rootParentTask.subTasks[i].subTasks.length;j++)
+    //     {
+    //         rootParentTask.subTasks[i].subTasks[j].taskID=displaySelf(rootParentTask.subTasks[i].subTasks[j].name,rootParentTask.subTasks[i].subTasks[j].parent);
+    //         for(let k=0; k<rootParentTask.subTasks[i].subTasks[j].subTasks;k++)
+    //         {
+    //             rootParentTask.subTasks[i].subTasks[j].subTasks[k].taskID=displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].parent);
+    //             for(let l=0; l<rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks;l++)
+    //             {
+    //                 rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].taskID=displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].parent);
+    //             }
+    //         }
+    //     }
+        
+    // }
+    saveList();
  
 }
 

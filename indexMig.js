@@ -114,7 +114,7 @@ function editTask(){
     let newTask;
     const parentElement = this.parentNode;
     const oldTask =parentElement.children[1].innerText
-    console.log(oldTask);
+    
     const newInput =document.createElement("input");
     newInput.type="text";
     newInput.placeholder=oldTask;

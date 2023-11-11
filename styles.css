@@ -18,6 +18,12 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.subTask{
+    background-color:#E1CDFA ;
+    width:70%;
+    margin-left: 2rem;
+}
+
 .scrollable-list {
     list-style: none;
     /* Remove default list bullet points */
