@@ -1,6 +1,7 @@
 const taskList = document.getElementById("taskList");
 const taskValue= document.getElementById("new_task");
 let maximumNestedSubtasks = 4;
+let rootParentTask;
 
 class Task{
     constructor(name,parent,parentIndex)
@@ -8,83 +9,93 @@ class Task{
         this.name = name;
         this.parent = parent;
         this.parentIndex = parentIndex;
-        this.taskID = this.displaySelf();
+        this.taskID = displaySelf(this.name,this.parent);
         this.checked = false;
         this.subTasks = [];
 
     }
 
-    displaySelf()
+    
+}
+
+function addTask(){
+    const newTask = new Task(taskValue.value,rootParentTask,null);
+    rootParentTask.subTasks.push(newTask);
+    newTask.parentIndex=rootParentTask.subTasks.indexOf(newTask);
+    saveList();
+}
+
+function displaySelf(taskName,parent)
     {
-        if(this.parent===null)
+        if(parent===null)
         {
             return taskList.id;
         }
         const newElements=[];
-    //creates div parent element and add its classes
-    const newItemDiv = document.createElement("div")
-    newItemDiv.classList.add("form-check","task");
+        //creates div parent element and add its classes
+        const newItemDiv = document.createElement("div")
+        newItemDiv.classList.add("form-check","task");
 
-    //creates check input element,adds its classes and pushes it to newElements array
-    const newCheckInput = document.createElement("input");
-    newCheckInput.classList.add("form-check-input");
-    newCheckInput.type="checkbox";
-    newCheckInput.addEventListener("click",updateParents);
-    newElements.push(newCheckInput);
+        //creates check input element,adds its classes and pushes it to newElements array
+        const newCheckInput = document.createElement("input");
+        newCheckInput.classList.add("form-check-input");
+        newCheckInput.type="checkbox";
+        newCheckInput.addEventListener("click",updateParents);
+        newElements.push(newCheckInput);
     
-    //create label element,adds its classes and values and pushes it to newElements array
-    const newItemLabel = document.createElement("label");
-    newItemLabel.classList.add("form-check-label");
-    newItemLabel.innerText=this.name;
-    newElements.push(newItemLabel);
+        //create label element,adds its classes and values and pushes it to newElements array
+        const newItemLabel = document.createElement("label");
+        newItemLabel.classList.add("form-check-label");
+        newItemLabel.innerText=taskName;
+        newElements.push(newItemLabel);
 
-    //creates edit and remove buttons,add its classes and pushes them to newElements array
-    const editButton = document.createElement("button");
-    editButton.innerText="Edit";
-    editButton.classList.add("btn");
-    editButton.classList.add("btn-success");
-    editButton.addEventListener("click",editTask);
-    newElements.push(editButton);
-    const removeButton = document.createElement("button");
-    removeButton.innerText="Remove";
-    removeButton.classList.add("btn");
-    removeButton.classList.add("btn-danger");
-    removeButton.addEventListener("click",removeTask);
-    newElements.push(removeButton);
-    if(checkNestIndex(this.parent)<maximumNestedSubtasks)
-    {
-        const dropDownButton = document.createElement("button");
-        dropDownButton.classList.add("btn");
-        dropDownButton.classList.add("btn-secondary");
-        dropDownButton.innerText="Sub-tasks"
-        dropDownButton.addEventListener("click",addSubtask);
-        newElements.push(dropDownButton);
+        //creates edit and remove buttons,add its classes and pushes them to newElements array
+        const editButton = document.createElement("button");
+        editButton.innerText="Edit";
+        editButton.classList.add("btn");
+        editButton.classList.add("btn-success");
+        editButton.addEventListener("click",editTask);
+        newElements.push(editButton);
+        const removeButton = document.createElement("button");
+        removeButton.innerText="Remove";
+        removeButton.classList.add("btn");
+        removeButton.classList.add("btn-danger");
+        removeButton.addEventListener("click",removeTask);
+        newElements.push(removeButton);
+        if(checkNestIndex(parent)<maximumNestedSubtasks)
+        {
+            const dropDownButton = document.createElement("button");
+            dropDownButton.classList.add("btn");
+            dropDownButton.classList.add("btn-secondary");
+            dropDownButton.innerText="Sub-tasks"
+            dropDownButton.addEventListener("click",addSubtask);
+            newElements.push(dropDownButton);
 
-    }
+        }
    
 
 
     
-   for(let i = 0; i<newElements.length;i++)
-   {
-        newItemDiv.appendChild(newElements[i]);
-   }
-   const itemID = generateUniqueId();
-   newItemDiv.id=`task_${itemID}`;
-   if(this.parent.taskID===taskList.id)
-   {    const listItem = document.createElement("li");
-        taskList.appendChild(listItem);
-        listItem.appendChild(newItemDiv);
-   }
-   else
-   {
-    const parentElement = document.getElementById(this.parent.taskID);
-    parentElement.appendChild(newItemDiv);
-   }
-   taskValue.value="";
-   return newItemDiv.id;
+        for(let i = 0; i<newElements.length;i++)
+        {
+            newItemDiv.appendChild(newElements[i]);
+        }
+        const itemID = generateUniqueId();
+        newItemDiv.id=`task_${itemID}`;
+        if(parent.taskID===taskList.id)
+        {      
+            const listItem = document.createElement("li");
+            taskList.appendChild(listItem);
+            listItem.appendChild(newItemDiv);
+        }
+        else
+        {
+            const parentElement = document.getElementById(parent.taskID);
+            parentElement.appendChild(newItemDiv);
+        }
+        taskValue.value="";
+        return newItemDiv.id;
     }
-}
 
 function checkNestIndex(parent)
 {
@@ -120,7 +131,7 @@ function addSubtask()
 {
 
 }
-let rootParentTask;
+
 
 function renderList()
 {
@@ -128,11 +139,12 @@ function renderList()
     {
 
         rootParentTask = new Task ("Root UL",null,null);
+        console.log(rootParentTask);
        
     }
     else
     {   
-        createTaskList(rootParentTask);
+        createTaskList();
     }
     
 }
@@ -140,9 +152,75 @@ function clearList(){
 localStorage.clear();
 }
 
-function addTask(){
-    const newTask = new Task(taskValue.value,rootParentTask,rootParentTask.subTasks.length);
-    rootParentTask.subTasks.push(newTask);
+
+
+function createTaskList()
+{
+    // Retrieve from local storage
+const storedTaskJSON = localStorage.getItem("taskList");
+const storedTaskData = JSON.parse(storedTaskJSON);
+
+// Recreate Task object hierarchy
+rootParentTask = serializableToTask(storedTaskData);
+
+// Render tasks on the webpage
+
+for(let i=0;i<rootParentTask.subTasks.length;i++)
+{
+    rootParentTask.subTasks[i].taskID=rootParentTask.subTasks[i].displaySelf(rootParentTask.subTasks[i].name,rootParentTask.subTasks[i].parent);
+    for(let j=0;j< rootParentTask.subTasks[i].subTasks.length;j++)
+    {
+        rootParentTask.subTasks[i].subTasks[j].taskID=rootParentTask.subTasks[i].subTasks[j].displaySelf(rootParentTask.subTasks[i].subTasks[j].name,rootParentTask.subTasks[i].subTasks[j].parent);
+        for(let k=0; k<rootParentTask.subTasks[i].subTasks[j].subTasks;k++)
+        {
+            rootParentTask.subTasks[i].subTasks[j].subTasks[k].taskID=rootParentTask.subTasks[i].subTasks[j].subTasks[k].displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].parent);
+            for(let l=0; l<rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks;l++)
+            {
+                rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].taskID=rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].displaySelf(rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].name,rootParentTask.subTasks[i].subTasks[j].subTasks[k].subTasks[l].parent);
+            }
+        }
+    }
+    
+}
+ 
+}
+
+// A function to convert the Task object into a serializable structure
+function taskToSerializable(task) {
+  const serializable = {
+    name: task.name,
+    parentIndex: task.parentIndex,
+     taskID: task.taskID,
+    checked: task.checked,
+    subTasks: task.subTasks.map(subTask => taskToSerializable(subTask))
+  };
+  return serializable;
+}
+
+
+
+
+
+// To retrieve the task from local storage and convert it back to a Task object:
+
+function serializableToTask(serializable, parent=null) {
+    
+  const task = new Task(serializable.name,parent, serializable.parentIndex);
+  task.taskID = serializable.taskID;
+  task.checked = serializable.checked;
+  serializable.subTasks.forEach((subTaskData, index) => {
+    task.subTasks.push(serializableToTask(subTaskData, task));
+  });
+  return task;
+}
+
+function saveList()
+{
+    // Convert Task object to serializable format
+const serializableRootTask = taskToSerializable(rootParentTask);
+
+// Store in local storage
+localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
 }
 
 
