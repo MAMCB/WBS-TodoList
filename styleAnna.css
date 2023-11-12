@@ -8,6 +8,7 @@
   background-color: antiquewhite;
   font-family: "Sofia", sans-serif;
   min-height: 500px;
+  height:100vh;
 }
 
 .toDoContainer li {

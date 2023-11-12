@@ -92,6 +92,7 @@ body{
 img{
     border: 3px solid black;
     height:30rem;
+    border-radius: 10px;
 }
 .carouselContainer{
     width:50rem;
