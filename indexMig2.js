@@ -2,16 +2,21 @@ const taskList = document.getElementById("taskList");
 const taskValue= document.getElementById("new_task");
 let maximumNestedSubtasks = 4;
 let rootParentTask;
+document.addEventListener("DOMContentLoaded", function () {
+  renderList();
+});
+
 
 class Task{
-    constructor(name,parent,parentIndex)
+    constructor(name,parent,parentIndex,checked=false)
     {   
         this.name = name;
         this.parent = parent;
         this.parentIndex = parentIndex;
-        this.taskID = displaySelf(this.name,this.parent,this);
-        this.checked = false;
+        this.checked = checked;
         this.subTasks = [];
+        this.taskID = displaySelf(this.name,this.parent,this);
+        
 
     }
 
@@ -120,7 +125,7 @@ function checkTask()
 {
     const task = findTask(this.parentNode.id);
     
-    task.checked=!task.checked;
+    task.checked=this.checked;
     console.log(task);
     console.log(rootParentTask);
     saveList();
@@ -188,7 +193,9 @@ function removeTask()
     parentTask.subTasks.splice(parentTask.subTasks.indexOf(Task),1);
     saveList();
     
+    
     this.parentNode.parentNode.removeChild(this.parentNode);
+    
 
 }
 
@@ -319,16 +326,15 @@ function taskToSerializable(task) {
 
 // To retrieve the task from local storage and convert it back to a Task object:
 
-function serializableToTask(serializable, parent=null) {
-    
-  const task = new Task(serializable.name,parent, serializable.parentIndex);
-  //task.taskID = serializable.taskID;
-  task.checked = serializable.checked;
+function serializableToTask(serializable, parent = null) {
+  const task = new Task(serializable.name, parent, serializable.parentIndex,serializable.checked);
+  //task.checked = serializable.checked; // Set the checked property based on stored data
   serializable.subTasks.forEach((subTaskData, index) => {
     task.subTasks.push(serializableToTask(subTaskData, task));
   });
   return task;
 }
+
 
 function saveList()
 {
@@ -339,6 +345,12 @@ const serializableRootTask = taskToSerializable(rootParentTask);
 localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
 }
 
+window.addEventListener('beforeunload', function (event) {
+  // Check if rootParentTask has no subtasks
+  if (!rootParentTask.subTasks || rootParentTask.subTasks.length === 0) {
+    // Clear local storage
+    localStorage.clear();
+  }
+});
 
 
-renderList();
