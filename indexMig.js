@@ -3,11 +3,12 @@ const taskList = document.getElementById("taskList");
 const newTask = document.getElementById("new_task");
 
 class Task{
-    constructor(name,parent,parentIndex)
+    constructor(name,parent,parentIndex,elementID)
     {   
         this.name = name;
         this.parent = parent;
         this.parentIndex = parentIndex;
+        this.elementID = elementID;
         this.checked = false;
         this.subTasks = [];
 
@@ -18,6 +19,7 @@ let rootParentTask;
 
 function saveList()
 {
+    console.log(rootParentTask);
     const serializableRootTask = taskToSerializable(rootParentTask);
     localStorage.setItem("taskList", JSON.stringify(serializableRootTask));
     
@@ -26,14 +28,17 @@ function saveList()
 
 function renderList()
 {
+  localStorage.clear();
     if(!localStorage.getItem("taskList"))
     {
-        rootParentTask = new Task ("Root UL",null,null);
+
+        rootParentTask = new Task ("Root UL",null,null,taskList.getAttribute("id"));
     }
     else
     {   
         const rootTaskFromLocalStorage= JSON.parse(localStorage.getItem("taskList"));
        rootParentTask = serializableToTask(rootTaskFromLocalStorage);
+       console.log(rootParentTask);
         createTaskList(rootParentTask,taskList);
     }
     
@@ -95,27 +100,59 @@ function addTask(){
         return;
     }
     
-    
-    taskList.appendChild(createListElements(submittedValue,true))
-    rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask
+    const task = createListElements(submittedValue,true);
+    // const listItem = document.createElement("li");
+    // listItem.appendChild(task);
+    taskList.appendChild(task);
+    rootParentTask.subTasks.push(createNewTask(submittedValue,rootParentTask,task.getAttribute("id")
         ));
         saveList();
     newTask.value="";
 }
 
 function editTask(){
-    const newTask=prompt("Change task");
-    if(newTask)
-    {   const parentTask = getParentTask(this.parentNode);
+    
+    let newTask;
+    const parentElement = this.parentNode;
+    const oldTask =parentElement.children[1].innerText
+    
+    const newInput =document.createElement("input");
+    newInput.type="text";
+    newInput.placeholder=oldTask;
+    parentElement.replaceChild(newInput,parentElement.children[1]);
+    const confirmButton = document.createElement("button");
+    confirmButton.classList.add("btn","btn-primary");
+    confirmButton.innerText="Confirm";
+    confirmButton.addEventListener("click",()=>{
+        newTask=newInput.value;
+        const editButton = document.createElement("button");
+    editButton.innerText="Edit";
+    editButton.classList.add("btn");
+    editButton.classList.add("btn-success");
+    editButton.addEventListener("click",editTask);
+    parentElement.replaceChild(editButton,parentElement.children[2]);
+     const newItemLabel = document.createElement("label");
+    newItemLabel.classList.add("form-check-label");
+    parentElement.replaceChild(newItemLabel,parentElement.children[1])
+   if(newTask)
+    {   console.log(parentElement.id);
+        const parentTask = findTaskByNode(parentElement.id,rootParentTask);
         parentTask.name=newTask;
-        this.parentNode.children[1].innerText=newTask;
+        parentElement.children[1].innerText=newTask;
         saveList();
     }
-    else
-    {
+   
+   else
+    {    parentElement.children[1].innerText=oldTask;
         return;
     }
-     
+
+
+    })
+    
+    
+    
+      parentElement.replaceChild(confirmButton,parentElement.children[2]);
    
     
 }
@@ -139,11 +176,13 @@ function removeTask(){
         this.parentNode.parentNode.removeChild(this.parentNode.parentNode.children[5]);
     }
 
-
-    const parentTask = getParentTask(this.parentNode);
-    const greatParentTask =getParentTask(this.parentNode.parentNode);
-    greatParentTask.subTasks.splice(greatParentTask.subTasks.indexOf(parentTask),1);
-    saveList();
+   
+    // const Task = findTaskByNode(this.parentNode.getAttribute("id"),rootParentTask);
+    // const parentTask =findTaskByNode(this.parentNode.parentNode.getAttribute("id"),rootParentTask);
+    // console.log(parentTask);
+   
+    // parentTask.subTasks.splice(parentTask.subTasks.indexOf(Task),1);
+    // saveList();
     
     this.parentNode.parentNode.removeChild(this.parentNode);
     
@@ -154,7 +193,9 @@ function removeTask(){
 }
 
 function expandDropDown(){
-    const parentTask = getParentTask(this.parentNode);
+    const parentTask = findTaskByNode(this.parentNode.id,rootParentTask);
+    console.log(this.parentNode.children[1]);
+    console.log(this.parentNode.id);
     console.log(parentTask.name);
     const subTaskValue =prompt("Add sub task");
     let newSubTask;
@@ -163,17 +204,17 @@ function expandDropDown(){
     {
         return;
     }
-    if(this.parentNode.parentNode.parentNode.parentNode.tagName==="UL")
+    if(this.parentNode.parentNode.parentNode.tagName==="UL")
     {
         newSubTask =createListElements(subTaskValue,false);
-        parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
+        parentTask.subTasks.push(createNewTask(subTaskValue,parentTask,newSubTask.getAttribute("id")));
         saveList();
         
         
     }
     else{
           newSubTask =createListElements(subTaskValue,true);
-          parentTask.subTasks.push(createNewTask(subTaskValue,parentTask));
+          parentTask.subTasks.push(createNewTask(subTaskValue,parentTask,newSubTask.getAttribute("id")));
           saveList();
     }
      
@@ -238,9 +279,9 @@ function toggleSubtasks(){
      }
 }
 
-function updateParents()
-{   const parentTask = getParentTask(this.parentNode);
-    const greatParentTask = getParentTask(this.parentNode.parentNode);
+function checkTask()
+{   const parentTask = findTaskByNode(this.parentNode.id,rootParentTask);
+    const greatParentTask = findTaskByNode(this.parentNode.parentNode.id,rootParentTask);
     
     parentTask.checked=this.checked;
     
@@ -287,13 +328,13 @@ function createListElements(value,subTask)
     const newElements=[];
     //creates div parent element and add its classes
     const newItemDiv = document.createElement("div")
-    newItemDiv.classList.add("form-check");
+    newItemDiv.classList.add("form-check","task");
 
     //creates check input element,adds its classes and pushes it to newElements array
     const newCheckInput = document.createElement("input");
     newCheckInput.classList.add("form-check-input");
     newCheckInput.type="checkbox";
-    newCheckInput.addEventListener("click",updateParents);
+    newCheckInput.addEventListener("click",checkTask);
     newElements.push(newCheckInput);
     
     //create label element,adds its classes and values and pushes it to newElements array
@@ -332,6 +373,8 @@ function createListElements(value,subTask)
    {
         newItemDiv.appendChild(newElements[i]);
    }
+   const itemID = generateUniqueId();
+   newItemDiv.id=`task_${itemID}`;
    
 
 
@@ -339,36 +382,49 @@ function createListElements(value,subTask)
     return newItemDiv;
 }
 
-function createNewTask(value,parent)
+function createNewTask(value,parent,element)
 {
     
-    const task = new Task(value,parent,parent.subTasks.length)
+    const task = new Task(value,parent,parent.subTasks.length,element)
     return task;
 }
 
-function getParentTask(node)
-{
-    let count = 0;
-  while (node !== null && node.tagName !== 'UL') {
-    node = node.parentNode;
-    count++;
-  }
- return findNestedTask(rootParentTask,count);
-}
+function findTaskByNode(node, rootTask) {
+  console.log(node);
 
-function findNestedTask(rootTask, n) {
-  if (n === 0) {
-    return rootTask;
-  }
-  
-  for (const subtask of rootTask.subTasks) {
-    const nestedTask = findNestedTask(subtask, n - 1);
-    if (nestedTask) {
-      return nestedTask;
+  function findNestedTask(task, currentNode, depth) {
+    console.log(task);
+    if (task.elementID === currentNode) { // Check for equality based on the unique identifier
+      return task;
     }
+
+    if (depth > 0) {
+      for (const subtask of task.subTasks) {
+        const nestedTask = findNestedTask(subtask, currentNode, depth - 1);
+        if (nestedTask) {
+          return nestedTask;
+        }
+      }
+    }
+    console.log("No task found");
+    return null;
   }
-  
-  return null;
+
+  let currentTask = rootTask;
+  let depth = 4;
+
+  // Check the rootTask for equality before entering the loop
+  if (currentTask.elementID === node) {
+    return currentTask;
+  }
+
+  while (currentTask !== null && currentTask.elementID !== node) {
+    // depth++;
+    currentTask = findNestedTask(currentTask, node, depth);
+    
+  }
+
+  return currentTask;
 }
 
 renderList();
@@ -379,6 +435,7 @@ function taskToSerializable(task) {
     name: task.name,
     parentIndex: task.parentIndex,
     checked: task.checked,
+    elementID:task.elementID,
     subTasks: task.subTasks.map(subTask => taskToSerializable(subTask))
   };
   return serializable;
@@ -390,8 +447,9 @@ function taskToSerializable(task) {
 
 // To retrieve the task from local storage and convert it back to a Task object:
 
-function serializableToTask(serializable, parent = null) {
-  const task = new Task(serializable.name, parent, serializable.parentIndex);
+function serializableToTask(serializable, parent=null) {
+    console.log(serializable);
+  const task = new Task(serializable.name,parent, serializable.parentIndex,serializable.elementID);
   task.checked = serializable.checked;
   serializable.subTasks.forEach((subTaskData, index) => {
     task.subTasks.push(serializableToTask(subTaskData, task));
@@ -399,8 +457,19 @@ function serializableToTask(serializable, parent = null) {
   return task;
 }
 
+function generateUniqueId() {
+  
+  return Date.now().toString();
+}
 
-
+function clearList(){
+    localStorage.clear();
+   for(let i=0;i<taskList.children.length;i++)
+   {
+    taskList.removeChild(taskList.children[i]);
+   }
+   
+}
 
 
 
