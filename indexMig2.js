@@ -194,7 +194,7 @@ function removeTask()
     saveList();
     
     
-    this.parentNode.parentNode.removeChild(this.parentNode);
+    this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
     
 
 }
